@@ -153,9 +153,24 @@
     title: DaySummary
   tutorials: 1
 - day: W2D2
-  category: TBD
+  category: Dynamical Systems
+  intro: https://www.youtube.com/watch?v=VhY7wUtFJKw
+  intro_bilibili: ''
   name: Signal Processing
-  playlist: ''
+  outro: '' 
+  outro_bilibili: ''
+  playlist: https://www.youtube.com/playlist?list=PLdJediM0Mjyk
+  slides:
+  - link: https://mfr.ca-1.osf.io/render?url=https://osf.io/tw2bf/?direct%26mode=render%26action=download%26mode=render
+    title: Intro
+  - link: https://mfr.ca-1.osf.io/render?url=https://osf.io/72y8w/?direct%26mode=render%26action=download%26mode=render
+    title: Tutorial 1
+  - link: https://mfr.ca-1.osf.io/render?url=https://osf.io/skxat/?direct%26mode=render%26action=download%26mode=render
+    title: Tutorial 2
+  - link: https://mfr.ca-1.osf.io/render?url=https://osf.io/583n4/?direct%26mode=render%26action=download%26mode=render
+    title: Tutorial 3
+  - link: https://mfr.ca-1.osf.io/render?url=https://osf.io/e6awb/?direct%26mode=render%26action=download%26mode=render
+    title: Tutorial 4
   tutorials: 4
 - day: W2D3
   category: Dynamical Systems
