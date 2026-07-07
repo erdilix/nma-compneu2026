@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NMA CompNeuro — library × day map</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  :root{ --bg:#12141a; --panel:#1b1e27; --ink:#e7e9ee; --mut:#8b93a7; --core:#4ec97a; --defer:#e6a23c; --drop:#e05555; --line:#3a4054; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+  header{ padding:14px 20px; border-bottom:1px solid var(--line); }
+  header h1{ margin:0; font-size:16px; font-weight:600; }
+  header p{ margin:4px 0 0; color:var(--mut); font-size:12px; }
+  .wrap{ display:flex; height:calc(100% - 62px); }
+  #graph{ flex:1; }
+  aside{ width:290px; border-left:1px solid var(--line); padding:16px; overflow:auto; background:var(--panel); }
+  aside h2{ font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mut); margin:0 0 8px; }
+  .legend div{ display:flex; align-items:center; gap:8px; margin:5px 0; font-size:13px; }
+  .dot{ width:11px; height:11px; border-radius:50%; flex:none; }
+  .swatch{ width:22px; height:4px; border-radius:2px; flex:none; }
+  .info{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+  .info b{ color:var(--ink); }
+  .info .k{ color:var(--mut); }
+  table{ width:100%; border-collapse:collapse; margin-top:8px; font-size:12px; }
+  td{ padding:2px 0; color:var(--mut); }
+  td.v{ color:var(--ink); text-align:right; }
+  .hint{ color:var(--mut); font-size:11px; margin-top:14px; }
+  .node text{ pointer-events:none; }
+  .link{ stroke:var(--line); stroke-opacity:.5; }
+  tspan.core{ fill:var(--core); } tspan.defer{ fill:var(--defer); } tspan.drop{ fill:var(--drop); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Neuromatch CompNeuro — <code>requirements.txt</code> × where it's actually imported</h1>
+  <p>Scanned 2026-07-07 from <code>course-content/</code> notebooks. Three layers: <b>library</b> → <b>tutorial day</b> → <b>week</b>. Drag nodes; hover to isolate.</p>
+</header>
+<div class="wrap">
+  <svg id="graph"></svg>
+  <aside>
+    <h2>Legend</h2>
+    <div class="legend">
+      <div><span class="dot" style="background:var(--core)"></span> library — tutorial tier</div>
+      <div><span class="dot" style="background:var(--defer)"></span> library — project tier (data loaders)</div>
+      <div><span class="dot" style="background:var(--drop)"></span> not an import (xkcd / decorator)</div>
+      <div><span class="dot" style="background:#7d879e"></span> tutorial day (W#D#)</div>
+      <div><span class="dot" style="background:#9db2ff"></span> week (W1 / W2 / W3)</div>
+    </div>
+    <div class="info" id="info">
+      <b>Hover a node</b>
+      <p class="k">Node size = how many tutorial days import it. Links connect a library to each day whose <code>student/</code> notebooks import it.</p>
+    </div>
+    <div class="info">
+      <h2>The split</h2>
+      <table>
+        <tr><td>Tutorial‑tier libs</td><td class="v">7</td></tr>
+        <tr><td>Project‑tier‑only libs</td><td class="v">6</td></tr>
+        <tr><td>Non‑imports (flagged)</td><td class="v">2</td></tr>
+        <tr><td>Universal (all 14 days)</td><td class="v">3</td></tr>
+      </table>
+      <p class="hint">numpy · matplotlib · ipywidgets are on every day. torch appears once (W1D5). h5py/cv2/torchvision/tqdm/natsort live only under <code>projects/</code>. <code>xkcd</code> is really <code>plt.xkcd()</code> — the pin is spurious.</p>
+    </div>
+  </aside>
+</div>
+<script>
+// ---- data: from notebook import scan (2026-07-07) ----
+const days = ["W1D1","W1D2","W1D3","W1D4","W1D5","W2D1","W2D2","W2D3","W2D4","W2D5","W3D2","W3D3","W3D4","W3D5"];
+const dayLabel = {
+  W1D1:"Model Types",W1D2:"Model Fitting",W1D3:"GLMs",W1D4:"Dim. Reduction",W1D5:"Deep Learning",
+  W2D1:"Modeling Practice",W2D2:"Signal Processing",W2D3:"Linear Systems",W2D4:"Bio Neurons",W2D5:"Dynamical Sys.",
+  W3D2:"Bayesian Decisions",W3D3:"Hidden Dynamics",W3D4:"Reinforcement L.",W3D5:"Network Causality"
+};
+// library -> tutorial days that import it (empty => project-tier or non-import)
+const libDays = {
+  numpy:        days.slice(),
+  matplotlib:   days.slice(),
+  ipywidgets:   days.slice(),
+  scipy:        ["W1D1","W1D2","W1D3","W1D5","W2D1","W2D2","W2D3","W2D5","W3D2","W3D3","W3D4"],
+  "scikit-learn":["W1D2","W1D3","W1D4","W1D5","W2D1","W3D5"],
+  requests:     ["W1D1","W1D3","W1D5","W3D3"],
+  torch:        ["W1D5"],
+  pandas:       ["W3D3"],          // + heavy in projects/
+  // project tier (no tutorial import) — shown detached with a note
+  tqdm:[], pathlib:[], h5py:[], "opencv-python":[], torchvision:[], natsort:[],
+  // non-imports
+  xkcd:[], "decorator==5.0.9":[]
+};
+const tier = {
+  numpy:"core",matplotlib:"core",ipywidgets:"core",scipy:"core","scikit-learn":"core",requests:"core",torch:"core",
+  pandas:"core", // straddles; treat as core (has a tutorial day)
+  tqdm:"defer",pathlib:"defer",h5py:"defer","opencv-python":"defer",torchvision:"defer",natsort:"defer",
+  xkcd:"drop","decorator==5.0.9":"drop"
+};
+const note = {
+  pandas:"1 tutorial day (W3D3) + workhorse across projects/",
+  tqdm:"projects/fMRI, projects/neurons — progress bars",
+  pathlib:"projects/fMRI, projects/neurons — path handling",
+  h5py:"projects/fMRI, projects/ECoG — read .h5/.mat",
+  "opencv-python":"projects/fMRI — movie-stimulus frames (cv2)",
+  torchvision:"projects/fMRI — pretrained CNN features",
+  natsort:"projects/ECoG — natural-sort AJILE12 sessions",
+  xkcd:"NOT imported — really plt.xkcd() matplotlib style; pin spurious",
+  "decorator==5.0.9":"NOT imported — transitive (ipython/networkx); keep"
+};
+
+const color = {core:"#4ec97a",defer:"#e6a23c",drop:"#e05555",day:"#7d879e",week:"#9db2ff"};
+
+// week grouping
+const weeks=["W1","W2","W3"];
+const weekLabel={W1:"Week 1 · foundations & ML toolkit",W2:"Week 2 · dynamics & signals",W3:"Week 3 · inference, learning, causality"};
+const weekOf=d=>d.slice(0,2);
+
+// ---- build graph ----
+const nodes=[], links=[];
+weeks.forEach(w=>nodes.push({id:w,type:"week"}));
+days.forEach(d=>{ nodes.push({id:d,type:"day",deg:0}); links.push({source:d,target:weekOf(d),week:true}); });
+Object.keys(libDays).forEach(l=>{
+  const ds=libDays[l];
+  nodes.push({id:l,type:"lib",tier:tier[l],deg:ds.length});
+  ds.forEach(d=>links.push({source:l,target:d}));
+});
+const nodeById=Object.fromEntries(nodes.map(n=>[n.id,n]));
+links.forEach(k=>{ if(!k.week) nodeById[k.target].deg=(nodeById[k.target].deg||0)+1; });
+
+const svg=d3.select("#graph");
+let W=0,H=0;
+function size(){ const r=svg.node().getBoundingClientRect(); W=r.width; H=r.height; svg.attr("viewBox",[0,0,W,H]); }
+size();
+// three columns: libs left, days middle, weeks right
+const colX=d=> d.type==="lib"?W*0.20 : d.type==="day"?W*0.55 : W*0.86;
+const weekY=id=>({W1:H*0.22,W2:H*0.5,W3:H*0.78}[id]);
+
+const link=svg.append("g").selectAll("line").data(links).join("line").attr("class","link")
+  .attr("stroke",d=>d.week?"#5b6079":null)
+  .attr("stroke-width",d=>d.week?2:1)
+  .attr("stroke-dasharray",d=>d.week?"1 0":null);
+const node=svg.append("g").selectAll("g").data(nodes).join("g").attr("class","node")
+  .call(d3.drag().on("start",dstart).on("drag",dragged).on("end",dend));
+
+node.append("circle")
+  .attr("r",d=> d.type==="week" ? 16 : d.type==="day" ? 9 : Math.max(9, 8+d.deg*1.7))
+  .attr("fill",d=> d.type==="week" ? color.week : d.type==="day" ? color.day : color[d.tier])
+  .attr("stroke","#0c0e13").attr("stroke-width",d=>d.type==="week"?2:1.5);
+
+node.append("text")
+  .attr("x",d=> d.type==="week"?0:12).attr("y",d=>d.type==="week"?4:4)
+  .attr("text-anchor",d=>d.type==="week"?"middle":"start")
+  .attr("fill",d=>d.type==="week"?"#0c0e13":"#e7e9ee")
+  .attr("font-size",d=>d.type==="week"?12:d.type==="lib"?12:11)
+  .attr("font-weight",d=>d.type==="lib"||d.type==="week"?700:400)
+  .text(d=> d.type==="week" ? d.id : d.type==="day" ? `${d.id} · ${dayLabel[d.id]}` : d.id);
+
+const sim=d3.forceSimulation(nodes)
+  .force("link",d3.forceLink(links).id(d=>d.id).distance(70).strength(.35))
+  .force("charge",d3.forceManyBody().strength(-340))
+  .force("x",d3.forceX(colX).strength(.18))
+  .force("y",d3.forceY(d=>d.type==="week"?weekY(d.id):H/2).strength(d=>d.type==="week"?.35:.05))
+  .force("collide",d3.forceCollide(28))
+  .on("tick",tick);
+
+function tick(){
+  link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  node.attr("transform",d=>`translate(${d.x},${d.y})`);
+}
+function dstart(e,d){ if(!e.active)sim.alphaTarget(.3).restart(); d.fx=d.x; d.fy=d.y; }
+function dragged(e,d){ d.fx=e.x; d.fy=e.y; }
+function dend(e,d){ if(!e.active)sim.alphaTarget(0); d.fx=null; d.fy=null; }
+
+// hover isolate + info panel
+const info=d3.select("#info");
+const adj=new Map(nodes.map(n=>[n.id,new Set([n.id])]));
+links.forEach(k=>{ adj.get(k.source.id||k.source).add(k.target.id||k.target); adj.get(k.target.id||k.target).add(k.source.id||k.source); });
+node.on("mouseenter",(e,d)=>{
+  const near=adj.get(d.id);
+  node.style("opacity",n=>near.has(n.id)?1:.12);
+  link.style("stroke-opacity",k=>(k.source.id===d.id||k.target.id===d.id)?.9:.04)
+      .style("stroke",k=>(k.source.id===d.id||k.target.id===d.id)?"#9aa4bd":null);
+  if(d.type==="lib"){
+    const tlabel={core:"tutorial tier",defer:"project tier",drop:"not an import"}[d.tier];
+    info.html(`<b>${d.id}</b> <span class="k">— ${tlabel}</span>`+
+      `<p class="k">Tutorial days importing it: <b style="color:#e7e9ee">${d.deg}</b> / 14</p>`+
+      (libDays[d.id].length?`<p class="k">${libDays[d.id].join(" · ")}</p>`:"")+
+      (note[d.id]?`<p class="hint">${note[d.id]}</p>`:""));
+  } else if(d.type==="week"){
+    const wd=days.filter(x=>weekOf(x)===d.id);
+    info.html(`<b>${weekLabel[d.id]}</b>`+
+      `<p class="k">Tutorial days: <b style="color:#e7e9ee">${wd.length}</b></p>`+
+      `<p class="k">${wd.map(x=>x+" "+dayLabel[x]).join(" · ")}</p>`);
+  } else {
+    const ls=Object.keys(libDays).filter(l=>libDays[l].includes(d.id));
+    info.html(`<b>${d.id} — ${dayLabel[d.id]}</b> <span class="k">(${weekLabel[weekOf(d.id)].split(" · ")[0]})</span>`+
+      `<p class="k">Imports (of pinned reqs): <b style="color:#e7e9ee">${ls.length}</b></p>`+
+      `<p class="k">${ls.join(" · ")}</p>`);
+  }
+}).on("mouseleave",()=>{
+  node.style("opacity",1); link.style("stroke-opacity",.5).style("stroke",null);
+  info.html(`<b>Hover a node</b><p class="k">Node size = how many tutorial days import it. Links connect a library to each day whose <code>student/</code> notebooks import it.</p>`);
+});
+
+window.addEventListener("resize",()=>{ size(); sim.force("x",d3.forceX(colX).strength(.18)).force("y",d3.forceY(d=>d.type==="week"?weekY(d.id):H/2).strength(d=>d.type==="week"?.35:.05)); sim.alpha(.4).restart(); });
+</script>
+</body>
+</html>
