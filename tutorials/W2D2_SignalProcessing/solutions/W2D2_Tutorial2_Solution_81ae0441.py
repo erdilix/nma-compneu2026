@@ -1,0 +1,6 @@
+
+"""Answer 1: For the square wave, all the amplitudes are positive (no sign flips). In contrast, the sawtooth has signs (phase) that alternate from one harmonic to the next: +, −, +, −, ...
+Also note that for the square wave, not all harmonics are present: only the *odd harmonics* (odd multiples of 2Hz), i.e., a1 (2 Hz), a3 (6 Hz), and so on show up, while the even harmonics have zero amplitude, though we omitted plotting those. For the sawtooth, all harmonics are present. Notice the change in the slider labels for square vs. sawtooth wave.
+
+Answer 2: You might observe that in both cases, the magnitude fall-off (seen in the bottom-center plot) is not linear — the drop from one component to the next isn't constant. Instead, there's a large fall-off from the first to the second component, and this fall-off shrinks as you go on. For both the square wave and the sawtooth, this pattern follows a 1/n decay: the amplitude of the nth harmonic is inversely proportional to n. This relatively slow decay is why both waveforms need many harmonics to approximate their sharp corners well.
+""";
