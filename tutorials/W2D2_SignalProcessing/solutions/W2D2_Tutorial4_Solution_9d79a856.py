@@ -1,0 +1,5 @@
+"""
+Answer 1: The rectangular window has sharp frequency resolution because it keeps all samples inside the window equally and cuts the signal off very abruptly at the window boundaries. This abrupt cut gives a narrow main lobe in the frequency domain, so the peak can look sharp and well localized. But the same abrupt edges also introduce large sidelobes. These sidelobes mean that power from one frequency spreads into neighboring frequencies, producing spectral leakage.
+
+Answer 2: Yes. If one frequency component is strong, its sidelobes can spread power into nearby frequencies. A weaker nearby peak can then be hidden inside this leaked power, making it hard to detect. Smoother windows such as Hann or Blackman reduce sidelobes and therefore reduce leakage, but they also broaden the main lobe, which can make very close frequencies harder to separate. This is why window choice creates a trade-off between reducing spectral leakage and detecting nearby frequency peaks.
+""";
