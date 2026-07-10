@@ -1,0 +1,5 @@
+"""
+Answer 1: If we make the STFT window shorter, we improve time resolution because the analysis can follow rapid changes in time more closely. However, frequency resolution becomes worse because the window contains fewer cycles of the oscillation. If we make the STFT window longer, we improve frequency resolution because we observe more cycles and can estimate frequencies more precisely. However, time resolution becomes worse because short bursts are smeared across the longer window.
+
+Answer 2: I would use the STFT when I want a simple and interpretable time-frequency analysis with the same time window applied to all frequencies. This is useful when I want a fixed temporal scale and easy comparison across frequencies. I would consider using wavelets when the signal contains oscillations at multiple timescales, especially in neural data where low-frequency rhythms need longer windows and high-frequency rhythms can be localized with shorter windows. Wavelets do not remove the time-frequency trade-off, but they adapt it across frequencies in a more natural way.
+""";
