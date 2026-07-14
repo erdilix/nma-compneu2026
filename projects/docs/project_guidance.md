@@ -8,13 +8,13 @@ The goal of the course project is to give you the opportunity to practice asking
 
 We have assigned you to pods based on your broad interests (neurons, fMRI, ECoG, behavior/theory). With the help of your TA, each pod will split into two groups, with the goal of making well-balanced groups.  Once you're in groups, you will start brainstorming and searching the literature for interesting papers, with the goal of forming a project question. During week 1 you will try preliminary analyses of the datasets with the goal of refining and informing your question. Week 2 day 1 (W2D1) is dedicated to projects and will teach you a general strategy for approaching projects. You will apply this strategy to your own question. 
 
-For the rest of the second week you will continue to analyze data / refine your question, with the goal of writing an abstract on W2D5, which is another project day. Your abstract may or may not include results, but it should at least include a testable hypothesis. You'll swap abstracts with another group on W2D5 and provide/receive feedback. For the rest of the course, you will focus on getting evidence for/against your hypothesis.
+For the rest of the second week you will continue to analyze data / refine your question, with the goal of writing an abstract on W3D1, which is another project day. Your abstract may or may not include results, but it should at least include a testable hypothesis. You'll swap abstracts with another group on W3D1 and provide/receive feedback. For the rest of the course, you will focus on getting evidence for/against your hypothesis.
 
 Finally, in W3D5 you will meet with other groups in your pod and megapod (organized by the lead TAs), and tell them the story of your project. This is a low-key presentation that may include some of the plots you made along the way, but it is not meant as a real research presentation with high “production values”. See some of the [examples](https://compneuro.neuromatch.io/projects/docs/project_2020_highlights.html)  to get a sense of what the presentation will look like.
 
 ## Submission Links
 
-- W2D5 Abstract Submission [Airtable Link](https://airtable.com/shr0ozNAhXq6K1p8o)
+- W3D1 Abstract Submission [Airtable Link](https://airtable.com/shr0ozNAhXq6K1p8o)
 - W3D5 Project Submission [Airtable Link](https://airtable.com/shrvoz2N9UulAVqqU)
 
 ## Project templates
@@ -29,11 +29,6 @@ Finally, in W3D5 you will meet with other groups in your pod and megapod (organi
 Project TAs are your friendly dataset experts to consult with on all issues related to datasets. They can also help with other aspects of a project, including brainstorming, literature searches and coding. You will have meetings with them approximately every two days. During this time, they will help you refine your question and hypothesis into something that can be answered with our datasets. They can sometimes arrive unannounced or be late/early (busy schedules!). Please stop what you were doing to have the meeting, and then resume your work when the project TA leaves.
 
 For the assigned meetings, project TAs will generally come only during project times, but sometimes they might need to schedule meetings slightly earlier or later. We encourage you to reach out to them for extra meetings whenever you need them, and to post questions on discord in the #dataset-X channels. 
-
-## Project Mentors
-
-You will have a couple of scheduled meetings with a project mentor throughout the three weeks of the course.  Project Mentors are active researchers in the field of neuroscience. They may not be an expert in your dataset but they have experience guiding student research projects and can help you think about the scientific questions that you're asking and look for potential next steps or connections to interesting literature.  
-
 
 ##  Week 1: Getting started
 
@@ -137,11 +132,11 @@ You should now have a sense of the data, and you have probably refined your hypo
 
 Keep working on analyses, making sure to relate what you do back to the project plan you created. 
 
-### 🗓️ W2D5: Abstract Writing Day!
+### 🗓️ W3D1: Abstract Writing Day!
 
 One of the best ways to understand your own research is to try to write about it. You should write early and often, not just at the end when you are trying to write a paper or your thesis. Science conferences are a great way to present your intermediate work, and they give you a chance to write an abstract. However, you do not have to wait so long to write your project abstract, you will do it today! If you have preliminary results that is great, but it is not required. Most of the components of an abstract do not in fact require results. The goal for this day is to workshop your abstract with your group, and then present this to your entire pod. You can also think of it as a much more refined version of the project proposal you submitted originally.
 
-If you think your abstract is lacking the computational "oomph" to make it sound good, check out the "W2D5 (bonus)" section below. Take the time to find interesting modeling or computational facets to your project, because this will make the abstract writing easier and more enjoyable since you can talk about big, interesting ideas and then gradually focus on the very specific work that you've done.  
+If you think your abstract is lacking the computational "oomph" to make it sound good, check out the "W3D1 (bonus)" section below. Take the time to find interesting modeling or computational facets to your project, because this will make the abstract writing easier and more enjoyable since you can talk about big, interesting ideas and then gradually focus on the very specific work that you've done.  
 
 The starting point for workshopping your abstract should be getting feedback from an LLM using the [NMA system prompt](https://osf.io/bhs4q/download).
 
@@ -168,7 +163,7 @@ Note: the timings for this day are just suggestions. You can spend more or less 
 Once you are done, please submit the abstract [here](https://airtable.com/app1MtChyjyKEDzAt/shr0ozNAhXq6K1p8o). We will not use this for further matching or evaluation, but we will keep a record of it to help us track the progress of all groups. If you really need/want to, the abstract can also be submitted on Monday.
 
 
-### W2D5 (bonus)
+### W3D1 (bonus)
 
 Writing an abstract is also a good time to reflect on how your work relates to some of the big computational ideas in neuroscience. Relating your work to big ideas is a good way to get lots of people interested in your work! It is also a good way to find inspiration for what to do next. Maybe your question speak to one of these big ideas in neuroscience? 
 

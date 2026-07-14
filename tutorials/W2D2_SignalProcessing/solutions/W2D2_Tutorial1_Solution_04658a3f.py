@@ -6,7 +6,7 @@ def subsample(t_total, sig_total, fs, phase):
     ----------
     t_total   : (N,) full time axis at FS_TRUE resolution
     sig_total : (N,) full signal
-    fs        : float, target sampling rate in Hz
+    fs        : float, target sampling frequency in Hz
 
     Returns
     -------
