@@ -158,3 +158,113 @@ Next steps:
 - **Circular version.** Directions live on a circle (359° and 1° are neighbours). Swap `my_gaussian` for a Von Mises (`scipy.stats.vonmises`), concentration κ ≈ 1/σ². See W3D2 for the circular treatment.
 - **Fit to data.** Compute the negative log likelihood of a subject's reports under this model and fit `prior_sigma` / `sensory_sigma` — the parameter-recovery workflow in **W3D2 Tutorial 3** (+ W1D2 Model Fitting). Real data lives in `laquitaine_human_errors.ipynb`.
 - **Loss functions.** MAP is one readout; the posterior mean minimizes squared error. W3D2 Tutorial 2 covers expected-utility readouts.
+
+## Step 7 — Block-level assumptions: online vs static prior
+
+Steps 1–6 used **one fixed prior**. Across a block, *where does that prior come from and does it change?* Two competing assumptions (the core static-vs-online comparison in the Laquitaine template):
+
+1. **Online Bayesian model (serial dependence)** — the subject updates its prior on **every trial** from the feedback, so the prior **keeps evolving** throughout the block.
+2. **Static Bayesian model** — the subject **learns the prior fast** (within `N_LEARN` trials) and then **holds it fixed** for the rest of the block.
+
+### Simulate one block (shared by both models)
+
+```python
+BLOCK_MEAN    = 225   # true generative prior mean for this block
+BLOCK_SIGMA   = 40    # true generative prior spread
+N_TRIALS      = 400
+SENSORY_SIGMA = 30    # sensory noise (fixed here)
+rng = np.random.default_rng(0)
+
+true_dirs    = np.clip(np.round(rng.normal(BLOCK_MEAN, BLOCK_SIGMA, N_TRIALS)), x[0], x[-1]).astype(int)
+measurements = np.clip(np.round(rng.normal(true_dirs, SENSORY_SIGMA)),          x[0], x[-1]).astype(int)
+feedback     = true_dirs   # subject is shown the true direction as feedback
+
+print(f'{N_TRIALS} trials, true prior mean {BLOCK_MEAN}° +/- {BLOCK_SIGMA}°')
+```
+
+### Assumption 1 — Online Bayesian model (serial dependence)
+
+The subject **updates its prior on every trial** from feedback, so the prior keeps evolving. The prior stays Gaussian with fixed width, but its **mean drifts toward each trial's feedback** via a delta rule:
+
+`prior_mean <- prior_mean + LR * (feedback - prior_mean)`
+
+Because the prior mean tracks recent feedback, this trial's estimate depends on recent trials — **serial dependence**. Small `LR` = long memory; large `LR` = jumpy.
+
+```python
+def run_online(measurements, feedback, sensory_sigma, prior_sigma, lr, init_mean):
+    """Online Bayesian observer: prior mean nudged toward feedback each trial."""
+    prior_mean = float(init_mean)
+    estimates, prior_means = [], []
+    for m, fb in zip(measurements, feedback):
+        prior = my_gaussian(x, prior_mean, prior_sigma)
+        likelihood = my_gaussian(x, m, sensory_sigma)
+        posterior = compute_posterior(prior, likelihood)
+        estimates.append(x[np.argmax(posterior)])
+        prior_means.append(prior_mean)
+        prior_mean = prior_mean + lr * (fb - prior_mean)   # update from feedback
+    return np.array(estimates), np.array(prior_means)
+
+LR = 0.05
+PRIOR_SIGMA = 40
+est_online, priormean_online = run_online(measurements, feedback,
+                                          SENSORY_SIGMA, PRIOR_SIGMA,
+                                          lr=LR, init_mean=180)
+
+plt.plot(priormean_online, color=[0.85, 0.4, 0], label=f'online prior mean (LR={LR})')
+plt.axhline(BLOCK_MEAN, color='gray', ls=':', label=f'true prior mean {BLOCK_MEAN}°')
+plt.title('Online model: prior mean keeps evolving across the block')
+plt.xlabel('Trial'); plt.ylabel('Prior mean (deg)')
+plt.legend(); plt.show()
+```
+
+### Assumption 2 — Static Bayesian model
+
+The subject **learns the prior fast** — from the first `N_LEARN` feedbacks — then **holds it fixed** for the rest of the block. Estimate the prior mean from those first `N_LEARN` trials, freeze it, run standard inference (Steps 2–5) with that fixed prior. **No serial dependence** after warm-up.
+
+```python
+def run_static(measurements, feedback, sensory_sigma, prior_sigma, n_learn):
+    """Static Bayesian observer: prior mean learned from first n_learn feedbacks, then fixed."""
+    prior_mean = float(np.mean(feedback[:n_learn]))   # learned once, then fixed
+    prior = my_gaussian(x, prior_mean, prior_sigma)   # frozen prior
+    estimates = []
+    for m in measurements:
+        likelihood = my_gaussian(x, m, sensory_sigma)
+        posterior = compute_posterior(prior, likelihood)
+        estimates.append(x[np.argmax(posterior)])
+    return np.array(estimates), prior_mean
+
+N_LEARN = 30
+est_static, priormean_static = run_static(measurements, feedback,
+                                          SENSORY_SIGMA, PRIOR_SIGMA, n_learn=N_LEARN)
+
+print(f'static prior mean (learned from first {N_LEARN} trials): {priormean_static:.1f} deg')
+plt.plot(priormean_online, color=[0.85, 0.4, 0], alpha=0.7, label='online prior mean')
+plt.axhline(priormean_static, color=[0, 0.5, 0.2], label=f'static prior mean ({priormean_static:.0f}°)')
+plt.axhline(BLOCK_MEAN, color='gray', ls=':', label=f'true prior mean {BLOCK_MEAN}°')
+plt.title('Static prior (flat) vs online prior (evolving)')
+plt.xlabel('Trial'); plt.ylabel('Prior mean (deg)')
+plt.legend(); plt.show()
+```
+
+### Comparing the two
+
+| | prior over the block | serial dependence |
+|---|---|---|
+| **Online** | keeps evolving (delta rule) | yes |
+| **Static** | fixed after fast warm-up | no |
+
+To decide which the data favour, fit each model's free parameters (online: `LR`, `prior_sigma`; static: `N_LEARN`, `prior_sigma`) by minimizing the **negative log likelihood** of the subject's responses, then compare with **AIC** — the static-vs-online test in the Laquitaine template (**W3D2 Tutorial 3** + **W1D2 Model Fitting**).
+
+```python
+err_online = est_online - true_dirs
+err_static = est_static - true_dirs
+
+plt.plot(err_online, color=[0.85, 0.4, 0], alpha=0.6,
+         label=f'online (RMSE {np.sqrt(np.mean(err_online**2)):.1f}°)')
+plt.plot(err_static, color=[0, 0.5, 0.2], alpha=0.6,
+         label=f'static (RMSE {np.sqrt(np.mean(err_static**2)):.1f}°)')
+plt.axhline(0, color='gray', ls=':')
+plt.title('Estimate - true direction, per trial')
+plt.xlabel('Trial'); plt.ylabel('Signed error (deg)')
+plt.legend(); plt.show()
+```
