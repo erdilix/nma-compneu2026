@@ -269,6 +269,41 @@ plt.xlabel('Trial'); plt.ylabel('Prior mean (deg)')
 plt.legend(); plt.show()
 ```
 
+#### Note: what the static prior is, and the warm-up
+
+`prior_mean = np.mean(feedback[:N_LEARN])` — the **average of the first 30 feedbacks** (≈ 225°). Only the mean is learned; `prior_sigma` stays fixed at 40. That frozen prior is applied to **every** trial, so its line is flat across the whole block — **including before trial 30** — because the code peeks at the first 30 feedbacks and applies the result retroactively.
+
+The version below makes the warm-up **explicit**: trials `< N_LEARN` use a flat prior while still learning; from `N_LEARN` on the prior is frozen. The prior-mean line is `NaN` before trial 30, then jumps to the learned value.
+
+```python
+def run_static_warmup(measurements, feedback, sensory_sigma, prior_sigma, n_learn):
+    """Static observer that SHOWS the warm-up: flat prior before n_learn, fixed after."""
+    prior_mean_learned = float(np.mean(feedback[:n_learn]))
+    estimates, prior_means = [], []
+    for t, m in enumerate(measurements):
+        if t < n_learn:
+            prior = np.ones_like(x, dtype=float) / len(x)   # flat: still learning
+            prior_means.append(np.nan)
+        else:
+            prior = my_gaussian(x, prior_mean_learned, prior_sigma)  # frozen
+            prior_means.append(prior_mean_learned)
+        likelihood = my_gaussian(x, m, sensory_sigma)
+        posterior = compute_posterior(prior, likelihood)
+        estimates.append(x[np.argmax(posterior)])
+    return np.array(estimates), np.array(prior_means)
+
+est_static_wu, priormean_static_wu = run_static_warmup(measurements, feedback,
+                                                       SENSORY_SIGMA, PRIOR_SIGMA,
+                                                       n_learn=N_LEARN)
+
+plt.plot(priormean_static_wu, color=[0, 0.5, 0.2], lw=2, label='static prior mean (warm-up)')
+plt.axvline(N_LEARN, color='k', ls='--', lw=1, label=f'learning ends (trial {N_LEARN})')
+plt.axhline(BLOCK_MEAN, color='gray', ls=':', label=f'true prior mean {BLOCK_MEAN}°')
+plt.title('Static with warm-up: flat/undefined before trial 30, fixed after')
+plt.xlabel('Trial'); plt.ylabel('Prior mean (deg)')
+plt.legend(); plt.show()
+```
+
 ### Comparing the two
 
 | | prior over the block | serial dependence |
