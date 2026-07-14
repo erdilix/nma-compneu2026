@@ -217,6 +217,29 @@ plt.xlabel('Trial'); plt.ylabel('Prior mean (deg)')
 plt.legend(); plt.show()
 ```
 
+### What you can and can't observe in real data
+
+The simulation uses four quantities, but a real experiment only *sees* some of them:
+
+| Quantity | Observable? | Notes |
+|----------|-------------|-------|
+| **stimulus** (true displayed direction) | ✅ yes | the experimenter sets it |
+| **estimate** (subject's report) | ✅ yes | the subject reports it |
+| **feedback** | ✅ if the task gives it | often just the stimulus shown again |
+| **measurement** (internal noisy percept) | ❌ **no** | latent — lives inside the brain |
+
+Key point: **stimulus ≠ measurement**. The stimulus is the true direction on screen (known); the measurement is the brain's *noisy internal reading* of it (`measurement ~ Gaussian(stimulus, sensory_sigma)`), never directly observed.
+
+So with real data you have only **stimulus** and **estimate** per trial. You never see a single trial's measurement — you **infer `sensory_sigma`** by fitting: across many trials, the spread of estimates around stimuli reveals how noisy the internal measurement must be.
+
+```
+observed:  stimulus, estimate            (per trial)
+latent:    measurement                   (integrated out / marginalized)
+fit:       sensory_sigma, prior_sigma, (LR or N_LEARN)   via NLL of estimates
+```
+
+That "integrate out the unobserved measurement" step is exactly the **marginalization** in **W3D2 Tutorial 3**: compute the likelihood of the *observed estimate* given the stimulus by summing over all possible hidden measurements. That's how a model with an unmeasurable variable still gets fit to data.
+
 ### Assumption 2 — Static Bayesian model
 
 The subject **learns the prior fast** — from the first `N_LEARN` feedbacks — then **holds it fixed** for the rest of the block. Estimate the prior mean from those first `N_LEARN` trials, freeze it, run standard inference (Steps 2–5) with that fixed prior. **No serial dependence** after warm-up.
