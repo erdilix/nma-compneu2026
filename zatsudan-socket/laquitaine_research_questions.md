@@ -41,6 +41,65 @@ Two independent lenses below: **(A) methodology** = what technique the question 
 
 ---
 
+## Candidate model assumptions (source: "Research Proposal")
+
+Nineteen assumptions from the source doc. Most are competing **prior-updating rules** — hypotheses about how the prior belief evolves trial to trial. They are the model space the modeling questions (11, 14–17) draw from. Grouped by what they specify.
+
+> **Turned into math:** see [`laquitaine_model_proposal.md`](laquitaine_model_proposal.md) — the 19 collapse to one circular Bayesian observer along two orthogonal axes (prior-dynamics core × readout mode) plus overlay params; each assumption below is one setting of that model.
+
+### M-a — Prior-updating rule (how the prior evolves over trials)
+- **A1** *Online Bayesian (serial-dependence):* subject updates prior every trial from feedback; prior keeps evolving all block.
+- **A2** *Static Bayesian:* learns prior fast (within N trials), then holds it fixed for the block.
+- **A3** *SPE (state prediction error):* learning rate modulated by prediction error — bigger estimate-vs-actual discrepancy = faster prior update. (this is the notebook's delta-rule model)
+- **A6** *Sliding average:* trial's prior = plain mean of previous 5 trials.
+- **A7** *Exponentially-weighted:* trial's prior = exp-weighted previous 5 trials.
+- **A8** *Fixed:* trial's prior = overall average prior (block-level std/mean), constant.
+- **A9** *Mixture:* trial's prior = weighted average of exp-weighted previous N trials and the overall average prior.
+- **A11** *Cumulative:* learned from all past trials (running average).
+
+### M-b — Architecture / strategy
+- **A4** *Switching observer:* each trial uses either prior OR sensory evidence (picked with probability set by relative strengths), not a multiplicative posterior. Produces bimodal errors.
+- **A5** *Hierarchical Bayesian (two-level):* infers both motion direction AND which prior is in play (uniform vs peaked/von Mises), switching on evidence.
+- **A12** *Hierarchical dynamic:* learns prior by updating belief across trials, with higher-level params constraining how fast/flexibly learning occurs.
+
+### M-c — Learning-rate & condition dependence
+- **A14** *Latent prior-variance:* subject doesn't grab block prior width immediately; holds latent prior-variance estimate, updates it each feedback, gradually approaches true block width.
+- **A15** *Shared mechanism:* same updating mechanism in narrow- and wide-prior conditions; learning-rate param may differ by condition.
+- **A16** *Partial carryover:* subject partly carries prior estimate from preceding block rather than fully resetting at each block transition.
+- **A17** *Timing:* prior updates at moment of last feedback; prior biases take effect only after extensive experience.
+- **A18** *Width→rate:* narrow prior = faster learning rate, wide prior = slower.
+- **A19** *Evidence×width:* sensory evidence disturbs learning rate in wide-prior condition, weaker effect in narrow-prior.
+
+### M-d — Measurement / readout
+- **A13** *Perception-equals-report:* reported estimate faithfully reflects perceptual inference that trial — no separate decision/report stage; so unimodal-vs-bimodal estimate shape reflects the perceptual computation, not downstream choice.
+- **A10** *RT-as-signal:* slope of reaction time over previous 5 trials predicts next trial's prediction error as the subject learns the prior (x = trial, y = RT).
+
+**Assumption → question links:** A1/A6/A7/A9/A11 (evolving prior) ↔ Q1/1b, Q18, Q14. A2/A8 (fixed) ↔ null baselines for Q13/Q15. A3 (SPE) ↔ Q14. A4/A5/A12 (switching/hierarchical) ↔ Q11, Q16, Q17. A14/A16/A17/A18/A19 (learning-rate dynamics) ↔ Q13, Q15, Q3a, Q6, Q18. A13 (readout) is a global caveat for every error-shape claim (Q5, Q12, Q17). A10 (RT slope) ↔ Q3b, Q4.
+
+---
+
+## Variables & manipulations (EDA reference)
+
+Single experiment: `experiment_name = data01_direction4priors`. 83,213 trials total.
+
+**Manipulations (independent variables):**
+- **Motion coherence** (sensory evidence): 0.06 / 0.12 / 0.24 (i.e. 6% / 12% / 24% dot coherence).
+- **Motion direction** = the prior: `prior_std` ∈ {10, 20, 40, 80}° with `prior_mean` fixed at **225°**. Displayed direction sampled per trial from that generative distribution ("experimental prior"). `motion_direction` observed range 5–355°, mean ≈ 219°, std ≈ 54°.
+
+**Dependent / response variables:**
+- `estimate_x`, `estimate_y`: cartesian coords of reported direction (each populated 83,210; contain NaN). *These are the response readout, not the stimulus — despite the source's label wording.*
+- `reaction_time`: populated **51,358 / 83,213** trials (mean 1.35 s, std 0.43); one negative outlier ≈ −0.018 s. RT questions (3b, 4) feasible on this subset.
+- `raw_response_time`, `response_arrow_start_angle`: also NaN-bearing; `response_arrow_start_angle` mean ≈ 180°, uniform-ish 0–359.
+- `trial_time`: 0–780 (mean ≈ 294).
+
+**Index columns:** `subject_id` 1–12, `session_id` 1–9, `run_id` 1–44, `experiment_id` ∈ {11, 12}.
+
+**Signed circular error** = true `motion_direction` − reported estimate. Estimates biased toward `prior_mean` (225°), strongest at low coherence — the core Bayesian-perception effect.
+
+**Links:** paper Laquitaine & Gardner 2017 (Neuron, S0896-6273(17)31134-0); repo github.com/steevelaquitaine/projInference. Keywords: heuristics, optimality, strategies, Bayesian inference, prior knowledge, statistical inference, bounded rationality.
+
+---
+
 ## Master map
 
 | # | Short title | Methodology group (A) | Scope group (B) | Needs |
