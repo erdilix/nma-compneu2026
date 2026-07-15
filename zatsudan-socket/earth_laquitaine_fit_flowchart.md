@@ -126,6 +126,32 @@ Fit in unconstrained space, transform back: $\kappa=e^{\theta}$ (keeps positive)
 
 ---
 
+## Colab links — all `earth_laquitaine` notebooks
+
+Base: `https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/<file>`
+
+| rung | properties (circular · mode · scope) | notebook | Colab |
+|---|---|---|---|
+| 1 | linear · generative · extended | `earth_laquitaine_gen_ext.ipynb` | [open](https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_gen_ext.ipynb) |
+| 2 | linear · fit · simple | `earth_laquitaine_fit_simple.ipynb` | [open](https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_fit_simple.ipynb) |
+| 3 | circular · generative · simple | `earth_laquitaine_circular_gen_simple.ipynb` | [open](https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_circular_gen_simple.ipynb) |
+| 4 | circular · fit · extended | `earth_laquitaine_circular_fit_ext.ipynb` | [open](https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_circular_fit_ext.ipynb) |
+| — | linear · fit · extended *(off-ladder control)* | `earth_laquitaine_fit_ext.ipynb` | [open](https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_fit_ext.ipynb) |
+
+Bare URLs:
+
+```
+https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_gen_ext.ipynb
+https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_fit_simple.ipynb
+https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_circular_gen_simple.ipynb
+https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_circular_fit_ext.ipynb
+https://colab.research.google.com/github/erdilix/nma-compneu2026/blob/main/projects/behavior_and_theory/earth_laquitaine_fit_ext.ipynb
+```
+
+> Colab renders from the `github/main` HEAD, so a link 404s until that notebook is pushed to `erdilix/nma-compneu2026:main`. All five above are pushed.
+
+---
+
 ## Cross-refs
 
 - Generative precursor (Tutorial 2, Gaussian, no fitting): [`earth_laquitaine_gen_ext.md`](earth_laquitaine_gen_ext.md).
