@@ -1,6 +1,6 @@
 # Basic Bayesian observer for motion-direction estimation
 
-> Markdown twin of `projects/behavior_and_theory/earth_laquitaine.ipynb`.
+> Markdown twin of `projects/behavior_and_theory/earth_laquitaine_gen_ext.ipynb`.
 > Reworked from the Laquitaine & Gardner prior-learning demo into a minimal **Bayesian inference** model, built step by step following **W3D2 Bayesian Decisions, Tutorial 2** (continuous state: Gaussian prior × Gaussian likelihood = Gaussian posterior).
 
 Inspired by [Laquitaine & Gardner, Neuron, 2017](https://www.cell.com/neuron/fulltext/S0896-6273(17)31134-0).

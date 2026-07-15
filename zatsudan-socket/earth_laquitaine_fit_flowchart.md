@@ -1,7 +1,7 @@
 # Laquitaine fit — functional / mathematical flowchart
 
-> Diagram twin of `projects/behavior_and_theory/earth_laquitaine_fit.ipynb` (von Mises) and its non-circular twin `earth_laquitaine_fit_gaussian.ipynb`.
-> Companion to [`earth_laquitaine.md`](earth_laquitaine.md) (the generative Tutorial-2 version) and [`laquitaine_model_proposal.md`](laquitaine_model_proposal.md) (the full model space).
+> Diagram twin of `projects/behavior_and_theory/earth_laquitaine_circular_fit_ext.ipynb` (von Mises) and its non-circular twin `earth_laquitaine_fit_ext.ipynb`.
+> Companion to [`earth_laquitaine_gen_ext.md`](earth_laquitaine_gen_ext.md) (the generative Tutorial-2 version) and [`laquitaine_model_proposal.md`](laquitaine_model_proposal.md) (the full model space).
 
 Reads the whole fit notebook as one function pipeline: **data → observer → per-trial likelihood → NLL → optimize → model comparison**. Node labels are compact; the exact math sits in the prose beside each stage.
 
@@ -128,7 +128,7 @@ Fit in unconstrained space, transform back: $\kappa=e^{\theta}$ (keeps positive)
 
 ## Cross-refs
 
-- Generative precursor (Tutorial 2, Gaussian, no fitting): [`earth_laquitaine.md`](earth_laquitaine.md).
+- Generative precursor (Tutorial 2, Gaussian, no fitting): [`earth_laquitaine_gen_ext.md`](earth_laquitaine_gen_ext.md).
 - Full 2-axis model space + research questions: [`laquitaine_model_proposal.md`](laquitaine_model_proposal.md), [`laquitaine_research_questions.md`](laquitaine_research_questions.md).
-- Notebooks: `earth_laquitaine_fit.ipynb` (von Mises), `earth_laquitaine_fit_gaussian.ipynb` (non-circular twin).
+- Notebooks: `earth_laquitaine_circular_fit_ext.ipynb` (von Mises), `earth_laquitaine_fit_ext.ipynb` (non-circular twin).
 - Method lectures: **W3D2 Bayesian Decisions, Tutorial 3** (marginalize latent, fit) + **W1D2 Model Fitting** (NLL, recovery, AIC).
