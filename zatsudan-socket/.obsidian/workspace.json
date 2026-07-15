@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "laquitaine_research_questions.md",
+                "file": "earth_laquitaine.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "laquitaine_research_questions"
+              "title": "earth_laquitaine"
             }
           }
         ]
@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "a72d789d374b872b",
@@ -186,7 +185,13 @@
   },
   "active": "7b30b08569cb32b7",
   "lastOpenFiles": [
+    "earth_laquitaine.md.tmp.6946.93fc5ce77115",
+    "earth_laquitaine.md.tmp.6946.153e7b7d711d",
+    "earth_laquitaine.md.tmp.6946.a08fb52dd710",
     "laquitaine_model_proposal.md",
-    "laquitaine_research_questions.md"
+    "laquitaine_research_questions.md",
+    "sohn-narain-2021-neural-bayesian-inference.md",
+    "earth_laquitaine.md",
+    "earth_laquitaine.md.tmp.6946.e8acb546741e"
   ]
 }
